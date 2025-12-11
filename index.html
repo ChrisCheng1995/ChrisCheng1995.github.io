@@ -1,49 +1,67 @@
-<style>
-    body {
-        font-family: Arial;
-        max-width: 900px;
-        margin: auto;
-        padding: 20px;
 
-        /* Background IMAGE */
-        background-image: url('background.JPG');
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
-    }
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Yu Zeng Photography</title>
+    <style>
+        body {
+            font-family: Arial;
+            max-width: 900px;
+            margin: auto;
+            padding: 20px;
 
-    h1 { 
-        text-align: center; 
-        font-size: 42px;
-        margin-bottom: 10px;
-    }
+            /* Background IMAGE */
+            background-image: url('background.JPG');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
 
-    p {
-        text-align: center;
-        font-family: 'Georgia', serif;
-        font-size: 28px;
-        font-weight: 300;
-        margin-top: 0;
-        margin-bottom: 40px;
-    }
+        h1 { text-align: center; }
 
-    h2 {
-        text-align: center;
-        font-size: 32px;
-        margin-top: 40px;
-        margin-bottom: 10px;
-    }
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
 
-    .gallery {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        justify-content: center; /* centers the images */
-    }
+        .gallery img {
+            width: 280px;
+            height: auto;
+            border-radius: 8px;
+        }
+      p {
+    font-family: 'Georgia', serif;
+    font-size: 28px;
+    font-weight: 300;
+        }
 
-    .gallery img {
-        width: 280px;
-        height: auto;
-        border-radius: 8px;
-    }
-</style>
+    </style>
+</head>
+
+<body>
+
+<h1>Yu Zeng Photography</h1>
+<p>Let's create some memory</p>
+    
+
+<h2>Landscape</h2>
+<div class="gallery">
+    <img src="photos/landscape1.jpg">
+    <img src="photos/landscape2.jpg">
+</div>
+
+<h2>Wildlife</h2>
+<div class="gallery">
+    <img src="photos/wildlife1.jpg">
+    <img src="photos/wildlife2.jpg">
+</div>
+
+<h2>Portrait</h2>
+<div class="gallery">
+    <img src="photos/portrait1.jpg">
+    <img src="photos/portrait2.jpg">
+</div>
+
+</body>
+</html>
