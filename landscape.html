@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Landscape – Yu Zeng Photography</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px 20px 60px;
+            background-color: #ffffff;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 40px;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            margin-top: 5px;
+            color: #666;
+        }
+
+        header a.back {
+            display: inline-block;
+            margin-bottom: 10px;
+            font-size: 14px;
+            text-decoration: none;
+            color: #333;
+        }
+
+        /* 瀑布流布局 */
+        .masonry {
+            column-count: 3;         /* 列数：电脑上 3 列 */
+            column-gap: 15px;
+        }
+
+        @media (max-width: 900px) {
+            .masonry { column-count: 2; }  /* 平板 2 列 */
+        }
+
+        @media (max-width: 600px) {
+            .masonry { column-count: 1; }  /* 手机上 1 列 */
+        }
+
+        .item {
+            break-inside: avoid;  /* 防止被列拆开 */
+            margin-bottom: 15px;
+        }
+
+        .item a img {
+            width: 100%;
+            border-radius: 8px;
+            display: block;
+        }
+
+        .item p {
+            font-size: 14px;
+            color: #444;
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        /* 点开后的大图弹层（lightbox） */
+        .lightbox {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 999;
+        }
+
+        .lightbox:target {
+            display: flex;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 80vh;
+            border-radius: 10px;
+        }
+
+        .lightbox .caption {
+            color: #fff;
+            margin-top: 10px;
+            text-align: center;
+            max-width: 80%;
+        }
+
+        .lightbox a.close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 28px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a class="back" href="index.html">← Back to Home</a>
+        <h1>Landscape</h1>
+        <p>Mountains, oceans, and open skies.</p>
+    </header>
+
+    <div class="masonry">
+        <!-- 照片 1 -->
+        <div class="item">
+            <a href="#landscape1">
+                <img src="photos/landscape1.jpg" alt="Landscape 1">
+            </a>
+            <p>Landscape 1 description: e.g. Sunset in Cornwall, 2023.</p>
+        </div>
+
+        <!-- 照片 2 -->
+        <div class="item">
+            <a href="#landscape2">
+                <img src="photos/landscape2.jpg" alt="Landscape 2">
+            </a>
+            <p>Landscape 2 description.</p>
+        </div>
+
+        <!-- 可以继续添加更多 item -->
+        <!--
+        <div class="item">
+            <a href="#landscape3">
+                <img src="photos/landscape3.jpg" alt="Landscape 3">
+            </a>
+            <p>Landscape 3 description...</p>
+        </div>
+        -->
+    </div>
+
+    <!-- 大图弹层（和上面的 href / id 对应） -->
+    <div id="landscape1" class="lightbox">
+        <a href="#" class="close">&times;</a>
+        <img src="photos/landscape1.jpg" alt="Landscape 1">
+        <div class="caption">Landscape 1 description: e.g. Sunset in Cornwall, 2023.</div>
+    </div>
+
+    <div id="landscape2" class="lightbox">
+        <a href="#" class="close">&times;</a>
+        <img src="photos/landscape2.jpg" alt="Landscape 2">
+        <div class="caption">Landscape 2 description.</div>
+    </div>
+
+    <!-- 如果有 landscape3，就再加一个 id="landscape3" 的 lightbox -->
+
+</body>
+</html>
