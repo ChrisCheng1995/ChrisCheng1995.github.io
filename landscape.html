@@ -6,58 +6,129 @@
   <title>Landscape – Yu Zeng Photography</title>
 
   <style>
-    /* 页面整体背景（不再是纯白） */
+    *{ box-sizing: border-box; }
+
     body{
+      margin: 0;
       font-family: Arial, sans-serif;
+      background: linear-gradient(#f6f7f9, #e9edf2);
+      color: #111;
+    }
+
+    /* ===== Fixed Navbar ===== */
+    .navbar{
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      background: rgba(10, 20, 35, 0.92);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 2000;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .nav-inner{
       max-width: 1100px;
+      height: 100%;
       margin: 0 auto;
-      padding: 20px 20px 60px;
-      background: linear-gradient(#f6f7f9, #eceef1);
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
     }
 
-    /* 顶部返回 */
-    a.back{
-      display: inline-block;
-      margin: 10px 0 14px;
-      font-size: 14px;
-      text-decoration: none;
-      color: #333;
-    }
-
-    a.back:hover{
-      text-decoration: underline;
-    }
-
-    /* Catalog 标题区域（带背景图） */
-    .catalog-header{
-      position: relative;
-      text-align: center;
-      padding: 110px 20px 70px;
-      margin: 0 0 35px;
+    .brand{
       color: #fff;
-      border-radius: 18px;
-      overflow: hidden;
+      text-decoration: none;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    .nav-links{
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .nav-links a{
+      color: rgba(255,255,255,0.88);
+      text-decoration: none;
+      font-size: 13px;
+      padding: 8px 0;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+    }
+
+    .nav-links a:hover{ color:#fff; }
+    .nav-links a.active{
+      color:#fff;
+      border-bottom-color:#fff;
+    }
+
+    /* 手机上导航挤不下就允许横向滚动（最稳） */
+    @media (max-width: 700px){
+      .nav-inner{ align-items: center; }
+      .nav-links{
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        max-width: 70vw;
+        gap: 14px;
+        scrollbar-width: none;
+      }
+      .nav-links::-webkit-scrollbar{ display:none; }
+    }
+
+    /* ===== Full-width Hero ===== */
+    .hero{
+      margin-top: 64px; /* 给 fixed navbar 腾位置 */
+      width: 100%;
+      padding: 110px 0 80px;
+      text-align: center;
+      color: #fff;
 
       background:
         linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
         url("photo_x/J_x.jpg") center / cover no-repeat;
-
-      box-shadow: 0 12px 28px rgba(0,0,0,0.18);
     }
 
-    .catalog-header h1{
-      font-size: 52px;
+    .hero-inner{
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .hero h1{
       margin: 0 0 10px;
+      font-size: 56px;
       letter-spacing: 0.2px;
     }
 
-    .catalog-header p{
+    .hero p{
       margin: 0;
-      opacity: 0.9;
       font-size: 18px;
+      opacity: 0.9;
     }
 
-    /* 瀑布流布局 */
+    @media (max-width: 600px){
+      .hero{ padding: 90px 0 60px; }
+      .hero h1{ font-size: 40px; }
+      .hero p{ font-size: 16px; }
+    }
+
+    /* ===== Page container (keep content centered) ===== */
+    main.page{
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 26px 20px 70px;
+    }
+
+    /* ===== Masonry ===== */
     .masonry{
       column-count: 3;
       column-gap: 15px;
@@ -65,15 +136,9 @@
 
     @media (max-width: 900px){
       .masonry{ column-count: 2; }
-      .catalog-header h1{ font-size: 44px; }
     }
-
     @media (max-width: 600px){
       .masonry{ column-count: 1; }
-      .catalog-header{
-        padding: 90px 16px 55px;
-      }
-      .catalog-header h1{ font-size: 38px; }
     }
 
     .item{
@@ -83,7 +148,7 @@
 
     .item a img{
       width: 100%;
-      border-radius: 10px;
+      border-radius: 12px;
       display: block;
       box-shadow: 0 10px 22px rgba(0,0,0,0.10);
       transition: transform .2s ease, box-shadow .2s ease;
@@ -101,7 +166,7 @@
       margin: 8px 0 0;
     }
 
-    /* Lightbox */
+    /* ===== Lightbox ===== */
     .lightbox{
       position: fixed;
       inset: 0;
@@ -110,13 +175,11 @@
       align-items: center;
       justify-content: center;
       flex-direction: column;
-      z-index: 999;
+      z-index: 3000;
       padding: 20px;
     }
 
-    .lightbox:target{
-      display: flex;
-    }
+    .lightbox:target{ display:flex; }
 
     .lightbox img{
       max-width: 92%;
@@ -145,7 +208,7 @@
       line-height: 1;
     }
 
-    /* 回到顶部按钮 */
+    /* ===== Back to Top ===== */
     #toTop{
       position: fixed;
       right: 26px;
@@ -159,12 +222,12 @@
       font-size: 22px;
       cursor: pointer;
 
-      display: none;          /* 默认隐藏，滚动后显示 */
+      display: none; /* 滚动后显示 */
       align-items: center;
       justify-content: center;
 
-      z-index: 1000;
-      transition: opacity .25s, transform .25s, background .25s;
+      z-index: 2500;
+      transition: transform .2s ease, background .2s ease;
     }
 
     #toTop:hover{
@@ -176,50 +239,74 @@
 
 <body>
 
-  <a class="back" href="index.html">← Back to Home</a>
+  <!-- Navbar (no wildlife) -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a class="brand" href="index.html">Yu Zeng</a>
 
-  <div class="catalog-header">
-    <h1>Landscape</h1>
-    <p>Mountains, oceans, and skies.</p>
-  </div>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="event.html">Event</a>
+        <a href="sport.html">Sport</a>
+        <a href="portrait.html">Portrait</a>
+        <a class="active" href="landscape.html">Landscape</a>
+        <a href="petit-things.html">Petit things</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+  </nav>
 
-  <div class="masonry">
-    <!-- Photo 1 -->
-    <div class="item">
-      <a href="#landscape1">
-        <img src="photo_x/DSC07393_x.jpg" alt="Yala peak">
-      </a>
-      <p>Yala peak</p>
+  <!-- Full width hero -->
+  <header class="hero">
+    <div class="hero-inner">
+      <h1>Landscape</h1>
+      <p>Mountains, oceans, and skies.</p>
+    </div>
+  </header>
+
+  <main class="page">
+
+    <div class="masonry">
+      <!-- Photo 1 -->
+      <div class="item">
+        <a href="#landscape1">
+          <img src="photo_x/DSC07393_x.jpg" alt="Yala peak">
+        </a>
+        <p>Yala peak</p>
+      </div>
+
+      <!-- Photo 2 -->
+      <div class="item">
+        <a href="#landscape2">
+          <img src="photo_x/DSC07574_x.jpg" alt="La Rosiere">
+        </a>
+        <p>La Rosiere</p>
+      </div>
+
+      <!-- 继续添加更多 item 即可 -->
     </div>
 
-    <!-- Photo 2 -->
-    <div class="item">
-      <a href="#landscape2">
-        <img src="photo_x/DSC07574_x.jpg" alt="La Rosiere">
-      </a>
-      <p>La Rosiere</p>
+    <!-- Lightbox 1 -->
+    <div id="landscape1" class="lightbox">
+      <a href="#" class="close">&times;</a>
+      <img src="photos/DSC07393.JPG" alt="Yala peak full">
+      <div class="caption">
+        Waiting for the sun to shine on the Yala peak. I sent a video to François showing the view with a coffee and a poop just beside me.
+      </div>
     </div>
-  </div>
 
-  <!-- Lightbox 1 -->
-  <div id="landscape1" class="lightbox">
-    <a href="#" class="close">&times;</a>
-    <img src="photos/DSC07393.JPG" alt="Yala peak full">
-    <div class="caption">
-      Waiting for the sun to shine on the Yala peak. I sent a video to François showing the view with a coffee and a poop just beside me.
+    <!-- Lightbox 2 -->
+    <div id="landscape2" class="lightbox">
+      <a href="#" class="close">&times;</a>
+      <img src="photos/DSC07574.JPG" alt="La Rosiere full">
+      <div class="caption">
+        A brilliant morning in La Rosiere. Found the view while we were waiting for Alice.
+      </div>
     </div>
-  </div>
 
-  <!-- Lightbox 2 -->
-  <div id="landscape2" class="lightbox">
-    <a href="#" class="close">&times;</a>
-    <img src="photos/DSC07574.JPG" alt="La Rosiere full">
-    <div class="caption">
-      A brilliant morning in La Rosiere. Found the view while we were waiting for Alice.
-    </div>
-  </div>
+  </main>
 
-  <!-- Back to top button -->
+  <!-- Back to top -->
   <button id="toTop" aria-label="Back to top">↑</button>
 
   <script>
