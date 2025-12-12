@@ -6,22 +6,26 @@
   <title>Landscape – Yu Zeng Photography</title>
 
   <style>
-    body {
+    /* 页面整体背景（不再是纯白） */
+    body{
       font-family: Arial, sans-serif;
       max-width: 1100px;
       margin: 0 auto;
       padding: 20px 20px 60px;
-      background-color: #f4f5f7;
       background: linear-gradient(#f6f7f9, #eceef1);
     }
 
     /* 顶部返回 */
-    a.back {
+    a.back{
       display: inline-block;
-      margin: 10px 0 0;
+      margin: 10px 0 14px;
       font-size: 14px;
       text-decoration: none;
       color: #333;
+    }
+
+    a.back:hover{
+      text-decoration: underline;
     }
 
     /* Catalog 标题区域（带背景图） */
@@ -29,7 +33,7 @@
       position: relative;
       text-align: center;
       padding: 110px 20px 70px;
-      margin: 10px 0 35px;
+      margin: 0 0 35px;
       color: #fff;
       border-radius: 18px;
       overflow: hidden;
@@ -37,60 +41,68 @@
       background:
         linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
         url("photo_x/J_x.jpg") center / cover no-repeat;
+
+      box-shadow: 0 12px 28px rgba(0,0,0,0.18);
     }
 
-    .catalog-header h1 {
+    .catalog-header h1{
       font-size: 52px;
       margin: 0 0 10px;
       letter-spacing: 0.2px;
     }
 
-    .catalog-header p {
+    .catalog-header p{
       margin: 0;
-      opacity: 0.85;
+      opacity: 0.9;
       font-size: 18px;
     }
 
     /* 瀑布流布局 */
-    .masonry {
+    .masonry{
       column-count: 3;
       column-gap: 15px;
     }
 
-    @media (max-width: 900px) {
-      .masonry { column-count: 2; }
-      .catalog-header h1 { font-size: 44px; }
+    @media (max-width: 900px){
+      .masonry{ column-count: 2; }
+      .catalog-header h1{ font-size: 44px; }
     }
 
-    @media (max-width: 600px) {
-      .masonry { column-count: 1; }
+    @media (max-width: 600px){
+      .masonry{ column-count: 1; }
       .catalog-header{
         padding: 90px 16px 55px;
       }
-      .catalog-header h1 { font-size: 38px; }
+      .catalog-header h1{ font-size: 38px; }
     }
 
-    .item {
+    .item{
       break-inside: avoid;
       margin-bottom: 15px;
     }
 
-    .item a img {
+    .item a img{
       width: 100%;
-      border-radius: 8px;
+      border-radius: 10px;
       display: block;
+      box-shadow: 0 10px 22px rgba(0,0,0,0.10);
+      transition: transform .2s ease, box-shadow .2s ease;
     }
 
-    .item p {
+    .item a img:hover{
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.14);
+    }
+
+    .item p{
       font-size: 14px;
       color: #444;
       text-align: center;
-      margin-top: 6px;
-      margin-bottom: 0;
+      margin: 8px 0 0;
     }
 
     /* Lightbox */
-    .lightbox {
+    .lightbox{
       position: fixed;
       inset: 0;
       background: rgba(0,0,0,0.85);
@@ -102,27 +114,28 @@
       padding: 20px;
     }
 
-    .lightbox:target {
+    .lightbox:target{
       display: flex;
     }
 
-    .lightbox img {
+    .lightbox img{
       max-width: 92%;
       max-height: 80vh;
-      border-radius: 10px;
+      border-radius: 12px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.35);
     }
 
-    .lightbox .caption {
+    .lightbox .caption{
       color: #fff;
       margin-top: 12px;
       text-align: center;
       max-width: 900px;
-      line-height: 1.5;
+      line-height: 1.55;
       font-size: 15px;
       opacity: 0.95;
     }
 
-    .lightbox a.close {
+    .lightbox a.close{
       position: absolute;
       top: 18px;
       right: 22px;
@@ -131,10 +144,36 @@
       font-size: 34px;
       line-height: 1;
     }
+
+    /* 回到顶部按钮 */
+    #toTop{
+      position: fixed;
+      right: 26px;
+      bottom: 26px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(0,0,0,0.55);
+      color: #fff;
+      font-size: 22px;
+      cursor: pointer;
+
+      display: none;          /* 默认隐藏，滚动后显示 */
+      align-items: center;
+      justify-content: center;
+
+      z-index: 1000;
+      transition: opacity .25s, transform .25s, background .25s;
+    }
+
+    #toTop:hover{
+      background: rgba(0,0,0,0.75);
+      transform: translateY(-2px);
+    }
   </style>
 </head>
 
-  
 <body>
 
   <a class="back" href="index.html">← Back to Home</a>
@@ -143,25 +182,6 @@
     <h1>Landscape</h1>
     <p>Mountains, oceans, and skies.</p>
   </div>
-
-   <button id="toTop" aria-label="Back to top">↑</button>
-
-  <!-- JS 也放在 body 最后 -->
-  <script>
-    const toTop = document.getElementById('toTop');
-
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 300) {
-        toTop.style.display = 'flex';
-      } else {
-        toTop.style.display = 'none';
-      }
-    });
-
-    toTop.addEventListener('click', () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-  </script>
 
   <div class="masonry">
     <!-- Photo 1 -->
@@ -198,6 +218,21 @@
       A brilliant morning in La Rosiere. Found the view while we were waiting for Alice.
     </div>
   </div>
+
+  <!-- Back to top button -->
+  <button id="toTop" aria-label="Back to top">↑</button>
+
+  <script>
+    const toTop = document.getElementById('toTop');
+
+    window.addEventListener('scroll', () => {
+      toTop.style.display = (window.scrollY > 300) ? 'flex' : 'none';
+    });
+
+    toTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  </script>
 
 </body>
 </html>
