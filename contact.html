@@ -97,6 +97,18 @@
       background: rgba(255,255,255,0.45);
       transform: translateY(-2px);
     }
+          .qr-wrapper {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.qr-code {
+  width: 180px;   /* 你可以自己调 */
+  height: auto;
+}
+
+    
   </style>
 </head>
 
@@ -135,6 +147,11 @@
         <a href="#" onclick="return false;">WeChat: YuHCeng</a>
       </div>
       <img src="wechat.jpg" width="160" style="border-radius:12px;">
+      
+      <div class="qr-wrapper">
+  <img src="images/wechat-qr.png" alt="WeChat QR" class="qr-code">
+</div>
+
 
       <!-- Phone -->
       <div class="contact-item">
