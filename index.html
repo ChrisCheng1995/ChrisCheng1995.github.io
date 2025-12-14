@@ -124,29 +124,34 @@
 .marker.right .side-text{
   text-align: right;
 }
+    
 @media (max-width: 820px){
 
-  /* 如果你现在是 grid 两列，也一起变一列（有就留，没有不影响） */
   .cliff-dock{
     grid-template-columns: 1fr;
     row-gap: 22px;
   }
 
-  /* 手机端统一对齐 */
   .marker.left,
   .marker.right{
     justify-self: center;
   }
 
-  /* 关键：让标题+副标题上下排列 */
+  /* 手机端：强制所有 marker 竖排，并把 gap 变小 */
   .marker{
     flex-direction: column;
     align-items: center;
     text-align: center;
     width: min(92vw, 520px);
+
+    gap: 6px;            /* ← 关键：缩小标题和副标题距离 */
   }
 
-  /* 关键：撤销桌面端 side-text 的 absolute/transform 定位 */
+  /* 关键：覆盖桌面端 .marker.right 的 row-reverse（如果你有的话） */
+  .marker.right{
+    flex-direction: column;   /* ← 这一行专门修 right 不生效的问题 */
+  }
+
   .marker .side-text{
     position: static;
     top: auto;
@@ -155,18 +160,16 @@
     transform: none;
 
     display: block;
-    margin-top: 8px;
+    margin-top: 0;       /* ← 用 gap 控制距离，这里就不要再额外加 8px 了 */
 
-    opacity: 1;           /* 手机没有 hover，直接显示 */
-    white-space: nowrap;  /* 只一行 */
-    overflow: hidden;     /* 不要自动 ... */
+    opacity: 1;
+    white-space: nowrap; /* 只一行 */
+    overflow: hidden;    /* 不要自动 ... */
     max-width: 100%;
 
     pointer-events: none;
   }
 }
-
-
 
     }
   </style>
