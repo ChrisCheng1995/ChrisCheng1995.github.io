@@ -53,118 +53,60 @@
     }
 
     /* ===== Marker ===== */
-    .marker{
-      position: relative;
-      display: inline-flex;
-      align-items:center;
-      padding: 14px 20px;
-      border-radius: 16px;
-      text-decoration:none;
+  /* ===== Marker：横向铭牌（标题 + 副标题） ===== */
+.marker{
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
 
-      background: rgba(0,0,0,0.48);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      border: 1px solid rgba(255,255,255,0.18);
+  padding: 14px 22px;
+  border-radius: 18px;
+  text-decoration: none;
 
-      box-shadow: 0 14px 34px rgba(0,0,0,0.35);
-      transition: transform .2s ease, background .2s ease, box-shadow .2s ease;
-    }
+  background: rgba(0,0,0,0.48);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1px solid rgba(255,255,255,0.18);
 
-    .marker.left{ align-self:flex-start; }
-    .marker.right{ align-self:flex-end; }
+  box-shadow: 0 14px 34px rgba(0,0,0,0.35);
+  transition: background .2s ease, box-shadow .2s ease;
+}
 
-    .marker:hover{
-      transform: translateY(-2px);
-      background: rgba(0,0,0,0.56);
-      box-shadow: 0 18px 44px rgba(0,0,0,0.40);
-    }
+/* 左右靠边 */
+.marker.left{ align-self: flex-start; }
+.marker.right{ align-self: flex-end; }
 
-    /* ===== Title ===== */
-    .marker .title{
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: 0.2px;
-      color: #fff;
-      white-space: nowrap;
-    }
+.marker:hover{
+  background: rgba(0,0,0,0.56);
+  box-shadow: 0 18px 44px rgba(0,0,0,0.40);
+}
 
-    /* ===== Side subtitle ===== */
-    .marker .side-text{
-      position: absolute;
-      top: 50%;
+/* ===== Title ===== */
+.marker .title{
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+}
 
-      /* 核心：宽度跟文字走，不再拉长 */
-      width: auto;
-      max-width: 420px;
-      white-space: normal;
+/* ===== Subtitle（横向，在右边） ===== */
+.marker .side-text{
+  font-size: 14px;
+  line-height: 1.4;
+  color: rgba(255,255,255,0.85);
+  white-space: nowrap;
 
-      padding: 10px 14px;
-      border-radius: 14px;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity .18s ease, transform .22s ease;
+}
 
-      font-size: 14px;
-      line-height: 1.35;
-      color: rgba(255,255,255,0.9);
+/* hover 时显示副标题 */
+.marker:hover .side-text{
+  opacity: 1;
+  transform: translateX(0);
+}
 
-      background: rgba(0,0,0,0.55);
-      border: 1px solid rgba(255,255,255,0.16);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .18s ease, transform .22s ease;
-      box-shadow: 0 14px 34px rgba(0,0,0,0.35);
-    }
-
-    /* Left → subtitle slides right */
-    .marker.left .side-text{
-      left: calc(100% + 16px);
-      transform: translateY(-50%) translateX(-8px);
-    }
-    .marker.left:hover .side-text{
-      opacity: 1;
-      transform: translateY(-50%) translateX(0);
-    }
-
-    /* Right → subtitle slides left */
-    .marker.right .side-text{
-      right: calc(100% + 16px);
-      transform: translateY(-50%) translateX(8px);
-    }
-    .marker.right:hover .side-text{
-      opacity: 1;
-      transform: translateY(-50%) translateX(0);
-    }
-
-    /* ===== Mobile fallback ===== */
-    @media (max-width: 820px){
-      .hero h1{ font-size: 44px; }
-      .hero p{ font-size: 20px; }
-
-      .cliff-dock{
-        margin: 90px auto 70px;
-        gap: 20px;
-      }
-
-      .marker{
-        align-self: stretch !important;
-        justify-content: center;
-      }
-
-      .marker .side-text{
-        top: calc(100% + 12px);
-        left: 0 !important;
-        right: 0 !important;
-
-        transform: translateY(0);
-        width: auto;
-        max-width: 100%;
-        text-align: center;
-      }
-
-      .marker:hover .side-text{
-        opacity: 1;
-      }
     }
   </style>
 </head>
