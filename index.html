@@ -49,7 +49,7 @@
 
   display: grid;
   grid-template-columns: 1fr 1fr;
-  row-gap: 36px;
+  row-gap: 60px;
 }
 
 /* 左右列 */
@@ -116,6 +116,14 @@
   max-width: 360px;
 }
 
+    .marker.right{
+  flex-direction: row-reverse;
+}
+
+/* 右侧副标题与标题之间的间距方向修正 */
+.marker.right .side-text{
+  text-align: right;
+}
     }
   </style>
 </head>
