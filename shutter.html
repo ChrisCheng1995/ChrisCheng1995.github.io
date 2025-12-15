@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Shutter – Yu Zeng Photography</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Playfair+Display:ital,wght@1,500&display=swap" rel="stylesheet">
+
+<style>
+/* === SAME CSS AS MEMENTO (no structural changes) === */
+*{box-sizing:border-box;}
+body{margin:0;font-family:Arial,sans-serif;background:#e9edf2;color:#111;}
+.navbar{position:fixed;top:0;left:0;right:0;height:72px;background:rgba(10,20,35,.94);backdrop-filter:blur(8px);z-index:2000;}
+.nav-inner{max-width:1200px;height:100%;margin:0 auto;padding:0 28px;display:flex;align-items:center;justify-content:space-between;}
+.brand{display:flex;align-items:center;gap:14px;text-decoration:none;}
+.brand-logo{height:48px;}
+.brand-text{display:flex;flex-direction:column;line-height:1;}
+.brand-name{font-family:Montserrat;font-weight:700;font-size:17px;letter-spacing:1.6px;color:#fff;}
+.brand-sub{margin-top:4px;font-family:"Playfair Display";font-style:italic;font-size:14px;color:rgba(255,255,255,.8);}
+.nav-links{display:flex;gap:34px;}
+.nav-links a{color:rgba(255,255,255,.85);text-decoration:none;font-size:16px;padding:6px 0;border-bottom:2px solid transparent;}
+.nav-links a.active{color:#fff;border-bottom-color:#fff;}
+
+.hero{
+  margin-top:72px;
+  padding:110px 0 80px;
+  text-align:center;
+  color:#fff;
+  background:
+    linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),
+    url("photo_x/S_x.jpg") center/cover no-repeat;
+}
+.hero h1{font-size:56px;margin:0 0 10px;}
+.hero p{font-size:18px;opacity:.9;margin:0;}
+
+main.page{max-width:1100px;margin:0 auto;padding:28px 20px 80px;}
+.masonry{column-count:3;column-gap:16px;}
+@media(max-width:900px){.masonry{column-count:2}}
+@media(max-width:650px){.masonry{column-count:1}}
+
+.album{break-inside:avoid;margin-bottom:16px;cursor:pointer;}
+.album img{width:100%;border-radius:12px;box-shadow:0 10px 22px rgba(0,0,0,.1);}
+.album p{text-align:center;font-size:14px;color:#444;margin:8px 0 0}
+
+/* Lightbox */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.86);display:none;align-items:center;justify-content:center;flex-direction:column;z-index:3000;}
+.lightbox.open{display:flex;}
+.lightbox img{max-width:92vw;max-height:80vh;border-radius:12px;}
+.caption{color:#fff;margin-top:12px;font-size:15px;text-align:center;}
+.lb-close,.lb-prev,.lb-next{position:absolute;width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.12);color:#fff;font-size:26px;cursor:pointer;}
+.lb-close{top:18px;right:22px;font-size:30px}
+.lb-prev{left:18px;top:50%;transform:translateY(-50%)}
+.lb-next{right:18px;top:50%;transform:translateY(-50%)}
+</style>
+</head>
+
+<body>
+<nav class="navbar">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <img src="photo_x/Logo.png" class="brand-logo">
+      <div class="brand-text">
+        <span class="brand-name">Yu Zeng</span>
+        <span class="brand-sub">Photography</span>
+      </div>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="memento.html">Memento</a>
+      <a class="active" href="shutter.html">Shutter</a>
+      <a href="sport.html">Sport</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <h1>Shutter</h1>
+  <p>Fragments, no theme, no rules.</p>
+</header>
+
+<main class="page">
+  <div class="masonry">
+
+    <div class="album"
+      data-title="Street"
+      data-caption="Moments that just happened."
+      data-images="photos/S1.jpg,photos/S2.jpg,photos/S3.jpg">
+      <img src="photo_x/S1_x.jpg">
+      <p>Street</p>
+    </div>
+
+  </div>
+
+  <div id="lightbox" class="lightbox">
+    <button class="lb-close">&times;</button>
+    <button class="lb-prev">&#8249;</button>
+    <img id="lb-img">
+    <button class="lb-next">&#8250;</button>
+    <div class="caption" id="lb-caption"></div>
+  </div>
+</main>
+
+<script src="lightbox.js"></script>
+</body>
+</html>
