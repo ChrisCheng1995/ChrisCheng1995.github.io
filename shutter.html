@@ -39,20 +39,22 @@ body{margin:0;font-family:Arial,sans-serif;background:#e9edf2;color:#111;}
 main.page{max-width:1100px;margin:0 auto;padding:28px 20px 80px;}
 .masonry{column-count:3;column-gap:16px;}
 @media(max-width:900px){.masonry{column-count:2}}
-  @media (max-width: 700px){
+@media (max-width: 700px){
   .nav-links{
+    display: flex;
     flex-wrap: nowrap;
-    overflow-x: auto;              /* ✅ 关键：允许横向拖动 */
-    -webkit-overflow-scrolling: touch;
-    max-width: 70vw;               /* ✅ 防止把品牌区挤没 */
+    overflow-x: auto;
+    max-width: 70vw;
     gap: 14px;
-    scrollbar-width: none;         /* Firefox 隐藏滚动条 */
-    touch-action: pan-x;           /* ✅ 提升手机端拖动手感 */
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
   }
+
   .nav-links::-webkit-scrollbar{
-    display: none;                 /* Chrome/Safari 隐藏滚动条 */
+    display: none;
   }
 }
+
 
 @media(max-width:650px){.masonry{column-count:1}}
 
