@@ -50,6 +50,9 @@
       line-height: 1;
       padding: 8px 0;
       min-width: 160px;
+       align-items: center;
+  gap: 12px;            /* logo 和文字的距离 */
+  text-decoration: none;
     }
     .brand-name{
       font-family: "Montserrat", Arial, sans-serif;
@@ -70,6 +73,17 @@
       transform: translateX(1px);
       white-space: nowrap;
     }
+    .brand-logo{
+  height: 36px;         /* 桌面端 logo 大小 */
+  width: auto;
+  display: block;
+}
+
+.brand-text{
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
 
     .nav-links{
       display: flex;
@@ -300,10 +314,14 @@
 <body>
   <nav class="navbar">
     <div class="nav-inner">
-      <a class="brand" href="index.html">
-        <span class="brand-name">Yu Zeng</span>
-        <span class="brand-sub">Photography</span>
-      </a>
+     <a class="brand" href="index.html">
+  <img src="photo_x/logo.png" alt="Yu Zeng logo" class="brand-logo">
+  <div class="brand-text">
+    <span class="brand-name">Yu Zeng</span>
+    <span class="brand-sub">Photography</span>
+  </div>
+</a>
+
 
       <div class="nav-links">
         <a href="index.html">Home</a>
