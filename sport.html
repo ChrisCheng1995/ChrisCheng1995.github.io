@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sport – Yu Zeng Photography</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Playfair+Display:ital,wght@1,500&display=swap" rel="stylesheet">
+
+<!-- EXACT SAME CSS AS SHUTTER -->
+<!-- Only hero background + text change -->
+
+</head>
+
+<body>
+<nav class="navbar">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <img src="photo_x/Logo.png" class="brand-logo">
+      <div class="brand-text">
+        <span class="brand-name">Yu Zeng</span>
+        <span class="brand-sub">Photography</span>
+      </div>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="memento.html">Memento</a>
+      <a href="shutter.html">Shutter</a>
+      <a class="active" href="sport.html">Sport</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" style="
+  background:
+    linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),
+    url('photo_x/Sport_x.jpg') center/cover no-repeat;
+">
+  <h1>Sport</h1>
+  <p>Speed, power, and movement.</p>
+</header>
+
+<main class="page">
+  <div class="masonry">
+
+    <div class="album"
+      data-title="Climbing"
+      data-caption="Stone, hands, gravity."
+      data-images="photos/C1.jpg,photos/C2.jpg,photos/C3.jpg">
+      <img src="photo_x/C1_x.jpg">
+      <p>Climbing</p>
+    </div>
+
+  </div>
+
+  <div id="lightbox" class="lightbox">
+    <button class="lb-close">&times;</button>
+    <button class="lb-prev">&#8249;</button>
+    <img id="lb-img">
+    <button class="lb-next">&#8250;</button>
+    <div class="caption" id="lb-caption"></div>
+  </div>
+</main>
+
+<script src="lightbox.js"></script>
+</body>
+</html>
