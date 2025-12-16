@@ -193,6 +193,12 @@ main.page{
 .lb-prev{ left: 18px; top: 50%; transform: translateY(-50%); }
 .lb-next{ right: 18px; top: 50%; transform: translateY(-50%); }
 
+/* disabled state for mobile spam clicking */
+.lb-prev[disabled], .lb-next[disabled]{
+  opacity: .45;
+  cursor: not-allowed;
+}
+
 /* ===== Mobile nav behavior ===== */
 @media (max-width:700px){
   .navbar{ height:64px; }
@@ -294,12 +300,24 @@ stayed at Finn&apos;s place watching dramas.'
   let title = '';
   let caption = '';
 
-  // Preload helper
+  // Prevent mobile spam-click lockups
+  let isSwitching = false;
+
   function preload(src){
     if(!src) return;
     const im = new Image();
     im.decoding = "async";
     im.src = src;
+  }
+
+  function safeIndex(i){
+    if(!images.length) return 0;
+    return (i + images.length) % images.length;
+  }
+
+  function setNavDisabled(disabled){
+    btnPrev.disabled = disabled;
+    btnNext.disabled = disabled;
   }
 
   function render(){
@@ -312,18 +330,32 @@ stayed at Finn&apos;s place watching dramas.'
     // Fade out immediately
     lbImg.style.opacity = 0;
 
-    // Preload current + neighbors (best bang-for-buck)
-    preload(images[index]);
-    preload(images[index + 1]);
-    preload(images[index - 1]);
+    // Preload current + neighbors (wrap index to avoid undefined)
+    preload(images[safeIndex(index)]);
+    preload(images[safeIndex(index + 1)]);
+    preload(images[safeIndex(index - 1)]);
 
-    // Load into a temp image, then swap to avoid "blank" stutter
+    isSwitching = true;
+    setNavDisabled(true);
+
     const tmp = new Image();
     tmp.decoding = "async";
+
     tmp.onload = () => {
       lbImg.src = src;
       requestAnimationFrame(() => { lbImg.style.opacity = 1; });
+      isSwitching = false;
+      setNavDisabled(false);
     };
+
+    tmp.onerror = () => {
+      // If image fails, still swap (shows broken image icon -> easier to find bad path)
+      lbImg.src = src;
+      requestAnimationFrame(() => { lbImg.style.opacity = 1; });
+      isSwitching = false;
+      setNavDisabled(false);
+    };
+
     tmp.src = src;
 
     lbCaption.textContent = title
@@ -350,21 +382,24 @@ stayed at Finn&apos;s place watching dramas.'
     lb.setAttribute('aria-hidden','true');
     document.body.style.overflow = '';
     document.body.classList.remove('lb-open');
+    isSwitching = false;
+    setNavDisabled(false);
   }
 
   function prev(){
     if(images.length <= 1) return;
-    index = (index - 1 + images.length) % images.length;
+    if(isSwitching) return;
+    index = safeIndex(index - 1);
     render();
   }
 
   function next(){
     if(images.length <= 1) return;
-    index = (index + 1) % images.length;
+    if(isSwitching) return;
+    index = safeIndex(index + 1);
     render();
   }
 
-  // Bind albums
   document.querySelectorAll('.album').forEach(card => {
     card.addEventListener('click', () => {
       const list = (card.dataset.images || '')
@@ -381,10 +416,8 @@ stayed at Finn&apos;s place watching dramas.'
   btnPrev.addEventListener('click', prev);
   btnNext.addEventListener('click', next);
 
-  // Click outside image to close
   lb.addEventListener('click', (e) => { if(e.target === lb) closeLightbox(); });
 
-  // Keyboard navigation
   window.addEventListener('keydown', (e) => {
     if(!lb.classList.contains('open')) return;
     if(e.key === 'Escape') closeLightbox();
