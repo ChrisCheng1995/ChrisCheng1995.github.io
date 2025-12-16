@@ -1,110 +1,239 @@
-/* ===== Lightbox: image fixed center + caption drawer ===== */
-.lightbox{
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.86);
-  display: none;
-  z-index: 3000;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Memento – Yu Zeng Photography</title>
 
-  /* we intercept horizontal swipe; allow vertical in drawer */
-  touch-action: pan-y;
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Playfair+Display:ital,wght@1,500&display=swap" rel="stylesheet">
+
+<style>
+*{ box-sizing:border-box; }
+
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+  background:#e9edf2;
+  color:#111;
 }
-.lightbox.open{ display:block; }
 
-/* Center stage always visible */
-.lb-stage{
-  position: absolute;
-  inset: 0;
+/* ===== Navbar ===== */
+.navbar{
+  position:fixed;
+  top:0; left:0; right:0;
+  height:72px;
+  background:rgba(10,20,35,0.94);
+  backdrop-filter:blur(8px);
+  z-index:2000;
+}
+body.lb-open .navbar{ backdrop-filter:none !important; }
+
+.nav-inner{
+  max-width:1200px;
+  height:100%;
+  margin:0 auto;
+  padding:0 28px;
   display:flex;
   align-items:center;
+  justify-content:space-between;
+}
+
+/* ===== Hero ===== */
+.hero{
+  margin-top:72px;
+  padding:110px 0 80px;
+  text-align:center;
+  color:#fff;
+  background:
+    linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),
+    url("photo_x/E_x.jpg") center/cover no-repeat;
+}
+
+/* ===== Page ===== */
+main.page{
+  max-width:1100px;
+  margin:0 auto;
+  padding:28px 20px 80px;
+}
+
+.masonry{ column-count:3; column-gap:16px; }
+@media(max-width:950px){ .masonry{ column-count:2; } }
+@media(max-width:650px){ .masonry{ column-count:1; } }
+
+.album{ break-inside:avoid; margin-bottom:16px; cursor:pointer; }
+.album img{
+  width:100%; border-radius:12px;
+  box-shadow:0 10px 22px rgba(0,0,0,.1);
+}
+
+/* ===== Lightbox (desktop default) ===== */
+.lightbox{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.86);
+  display:none;
+  align-items:center;
   justify-content:center;
-
-  /* reserve space so image never gets covered by the drawer */
-  padding: 24px 16px calc(180px + env(safe-area-inset-bottom, 0px)) 16px;
+  flex-direction:column;
+  z-index:3000;
 }
+.lightbox.open{ display:flex; }
 
-/* Image always centered, fully contained */
 #lb-img{
-  max-width: 92vw;
-  max-height: calc(100dvh - 240px);
-  border-radius: 12px;
-  box-shadow: 0 18px 40px rgba(0,0,0,0.35);
-  opacity: 0;
-  transition: opacity .18s ease;
-  will-change: opacity;
-  -webkit-user-select: none;
-  user-select: none;
-  -webkit-touch-callout: none;
-  object-fit: contain;
+  max-width:92vw;
+  max-height:80vh;
+  border-radius:12px;
+  transition:opacity .18s ease;
+  opacity:0;
 }
-.lightbox.open #lb-img{ opacity: 1; }
+.lightbox.open #lb-img{ opacity:1; }
 
-/* Caption drawer (scrollable) */
-.lb-drawer{
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-
-  max-height: 55dvh;
-  background: rgba(0,0,0,0.72);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-
-  border-top-left-radius: 18px;
-  border-top-right-radius: 18px;
-  box-shadow: 0 -18px 40px rgba(0,0,0,0.28);
-
-  padding: 10px 16px calc(14px + env(safe-area-inset-bottom, 0px));
-  overflow: hidden; /* content scroll inside */
-}
-
-/* little handle */
-.lb-handle{
-  width: 44px;
-  height: 4px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.35);
-  margin: 6px auto 10px;
-}
-
-/* scroll area for text */
-.lb-drawer-inner{
-  max-height: calc(55dvh - 44px);
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-/* caption text */
 #lb-caption{
   color:#fff;
+  margin-top:12px;
   text-align:center;
+  max-width:900px;
   line-height:1.55;
-  font-size: 15px;
-  opacity: .95;
-  padding: 2px 8px 10px;
-  white-space: pre-line; /* keep your line breaks */
+  white-space:pre-line;
 }
 
-/* Buttons */
-.lb-close, .lb-prev, .lb-next{
-  position: fixed;
-  background: rgba(255,255,255,0.12);
-  border: 1px solid rgba(255,255,255,0.25);
-  color: #fff;
-  width: 44px;
-  height: 44px;
-  border-radius: 999px;
-  font-size: 26px;
-  line-height: 40px;
-  cursor: pointer;
-  user-select: none;
-  z-index: 4000;
+.lb-close,.lb-prev,.lb-next{
+  position:absolute;
+  width:44px; height:44px;
+  border-radius:50%;
+  background:rgba(255,255,255,.15);
+  color:#fff;
+  border:1px solid rgba(255,255,255,.25);
+  cursor:pointer;
+}
+.lb-close{ top:18px; right:22px; font-size:30px; }
+.lb-prev{ left:18px; top:50%; transform:translateY(-50%); }
+.lb-next{ right:18px; top:50%; transform:translateY(-50%); }
+
+/* =====================================================
+   ✅ MOBILE ONLY: image fixed center + caption drawer
+   ===================================================== */
+@media (max-width:700px){
+
+  .lightbox{
+    align-items:stretch;
+    justify-content:flex-start;
+  }
+
+  .lb-stage{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px 12px 140px;
+  }
+
+  #lb-img{
+    max-width:92vw;
+    max-height:calc(100dvh - 220px);
+    object-fit:contain;
+  }
+
+  /* caption becomes drawer */
+  #lb-caption{
+    position:fixed;
+    left:0; right:0; bottom:0;
+    max-height:55dvh;
+    overflow-y:auto;
+    background:rgba(0,0,0,.72);
+    backdrop-filter:blur(10px);
+    padding:14px 16px 24px;
+    border-radius:18px 18px 0 0;
+    box-shadow:0 -12px 30px rgba(0,0,0,.35);
+    text-align:center;
+  }
+
+  .lb-close{
+    position:fixed;
+    top:env(safe-area-inset-top,12px);
+    right:env(safe-area-inset-right,12px);
+    background:rgba(0,0,0,.55);
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header class="hero">
+  <h1>Memento</h1>
+  <p>Places, people, and moments I remember.</p>
+</header>
+
+<main class="page">
+  <div class="masonry">
+
+    <div class="album"
+      data-title="Liverpool"
+      data-caption="Liverpool is a place full of memories.
+The city is gloomy and unapologetically devoted to its drinking culture.
+The cover photo captures a walk with my “bro” Xin on a rare day of beautiful weather.
+We made it to lots of bars, hit my head in the climbing gym, and stayed at Finn's place watching dramas."
+      data-images="photo_x/DSC00741_x.jpg,photo_x/DSC01866_x.jpg,photo_x/DSC00395_x.jpg">
+      <img src="photo_x/DSC00741_x.jpg">
+      <p>Liverpool</p>
+    </div>
+
+  </div>
+
+  <div id="lightbox" class="lightbox">
+    <button class="lb-close">&times;</button>
+    <button class="lb-prev">&#8249;</button>
+
+    <div class="lb-stage">
+      <img id="lb-img">
+    </div>
+
+    <button class="lb-next">&#8250;</button>
+    <div id="lb-caption"></div>
+  </div>
+</main>
+
+<script>
+const lb = document.getElementById('lightbox');
+const img = document.getElementById('lb-img');
+const cap = document.getElementById('lb-caption');
+
+let images=[], idx=0, title='', caption='';
+
+function show(){
+  img.style.opacity=0;
+  const src = images[idx];
+  const t = new Image();
+  t.onload=()=>{
+    img.src=src;
+    requestAnimationFrame(()=>img.style.opacity=1);
+  };
+  t.src=src;
+  cap.textContent = `${title} — ${idx+1}/${images.length}\n\n${caption}`;
 }
 
-/* Close always reachable */
-.lb-close{
-  top: calc(env(safe-area-inset-top, 0px) + 12px);
-  right: calc(env(safe-area-inset-right, 0px) + 12px);
-  font-size: 30px;
-  line-
+document.querySelectorAll('.album').forEach(a=>{
+  a.onclick=()=>{
+    images=a.dataset.images.split(',');
+    idx=0;
+    title=a.dataset.title||'';
+    caption=a.dataset.caption||'';
+    lb.classList.add('open');
+    document.body.classList.add('lb-open');
+    show();
+  };
+});
+
+document.querySelector('.lb-close').onclick=()=>{
+  lb.classList.remove('open');
+  document.body.classList.remove('lb-open');
+};
+document.querySelector('.lb-prev').onclick=()=>{ idx=(idx-1+images.length)%images.length; show(); };
+document.querySelector('.lb-next').onclick=()=>{ idx=(idx+1)%images.length; show(); };
+</script>
+
+</body>
+</html>
