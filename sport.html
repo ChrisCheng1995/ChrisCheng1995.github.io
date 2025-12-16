@@ -205,7 +205,6 @@ main.page{
 @media (max-width:700px){
   .navbar{ height:64px; }
   .nav-inner{ padding:0 18px; }
-
   .brand-logo{ height:28px; }
 
   .nav-links{
@@ -311,18 +310,20 @@ main.page{
     const counter = `${index + 1}/${images.length}`;
     lbImg.alt = title ? `${title} (${counter})` : `Photo ${counter}`;
 
-    // Fade out immediately
     lbImg.style.opacity = 0;
 
-    // Preload current + neighbors
     preload(images[index]);
     preload(images[index + 1]);
     preload(images[index - 1]);
 
-    // Load into temp image then swap
     const tmp = new Image();
     tmp.decoding = "async";
     tmp.onload = () => {
+      lbImg.src = src;
+      requestAnimationFrame(() => { lbImg.style.opacity = 1; });
+    };
+    tmp.onerror = () => {
+      // 路径错也不要卡住：直接切换，让你能看到 broken image 方便排查
       lbImg.src = src;
       requestAnimationFrame(() => { lbImg.style.opacity = 1; });
     };
@@ -389,20 +390,6 @@ main.page{
     if(e.key === 'ArrowLeft') prev();
     if(e.key === 'ArrowRight') next();
   });
-  
-  const tmp = new Image();
-tmp.decoding = "async";
-tmp.onload = () => {
-  lbImg.src = src;
-  requestAnimationFrame(() => { lbImg.style.opacity = 1; });
-};
-tmp.onerror = () => {
-  // 路径错也不要卡住，直接切换（至少能看到 broken image，方便你发现问题）
-  lbImg.src = src;
-  requestAnimationFrame(() => { lbImg.style.opacity = 1; });
-};
-tmp.src = src;
-
 </script>
 
 </body>
