@@ -218,9 +218,7 @@ main.page{
 }
 
 /* Mobile caption drawer */
-.lb-sheet{
-  display:none;
-}
+.lb-sheet{ display:none; }
 
 /* Buttons */
 .lb-close, .lb-prev, .lb-next{
@@ -259,7 +257,7 @@ main.page{
   cursor: not-allowed;
 }
 
-/* ===== Mobile nav behavior + mobile caption drawer ===== */
+/* ===== Mobile nav behavior + mobile caption drawer (click / swipe open) ===== */
 @media (max-width:700px){
   .navbar{ height:64px; }
   .nav-inner{ padding:0 18px; }
@@ -291,40 +289,59 @@ main.page{
     right: 0;
     bottom: 0;
     z-index: 3500;
-    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 8px);
 
-    background: linear-gradient(to top, rgba(0,0,0,0.92), rgba(0,0,0,0.35));
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    max-height: 72dvh;
 
-    border-top: 1px solid rgba(255,255,255,0.12);
+    background: rgba(0,0,0,0.70);
+    border-top: 1px solid rgba(255,255,255,0.16);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    transform: translateY(calc(100% - 74px));
+    transition: transform .22s ease;
+    will-change: transform;
+
+    display:flex;
+    flex-direction: column;
+
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .lightbox.cap-open .lb-sheet{
+    transform: translateY(0);
   }
 
   .lb-grab{
-    height: 26px;
+    height: 74px;
+    padding: 10px 14px 8px;
     display:flex;
-    align-items:center;
-    justify-content:center;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+    user-select:none;
+    -webkit-user-select:none;
   }
+
   .lb-grab::before{
     content:"";
     width: 46px;
     height: 4px;
     border-radius: 999px;
     background: rgba(255,255,255,0.35);
+    margin: 0 auto;
   }
 
   .lb-sheet-body{
-    max-height: 46dvh;
+    padding: 0 16px 16px;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
-    padding: 10px 14px 14px;
 
     color:#fff;
     text-align:center;
     line-height:1.55;
-    font-size: 15px;
+    font-size: 14px;
     opacity: .95;
+    white-space: pre-line;
   }
 }
 </style>
@@ -402,9 +419,9 @@ main.page{
       <div class="lb-caption-desktop" id="lb-caption"></div>
     </div>
 
-    <!-- mobile caption drawer -->
-    <div class="lb-sheet" id="lb-sheet" aria-hidden="false">
-      <div class="lb-grab"></div>
+    <!-- mobile caption drawer (tap/drag handle to open/close) -->
+    <div class="lb-sheet" id="lb-sheet" aria-hidden="true">
+      <div class="lb-grab" id="lb-grab"></div>
       <div class="lb-sheet-body" id="lb-sheet-body"></div>
     </div>
   </div>
@@ -419,6 +436,9 @@ main.page{
   const btnClose = document.querySelector('.lb-close');
   const btnPrev = document.querySelector('.lb-prev');
   const btnNext = document.querySelector('.lb-next');
+
+  const lbSheet = document.getElementById('lb-sheet');
+  const lbGrab = document.getElementById('lb-grab');
 
   let images = [];
   let index = 0;
@@ -484,7 +504,41 @@ main.page{
     setNavDisabled(false);
   }
 
-  function setCaptionText(text){
+  function closeSheet(){
+    lb.classList.remove('cap-open');
+    if(lbSheet) lbSheet.setAttribute('aria-hidden','true');
+  }
+
+  function openSheet(){
+    lb.classList.add('cap-open');
+    if(lbSheet) lbSheet.setAttribute('aria-hidden','false');
+  }
+
+  // ✅ avoid duplicated "Title 1/7" if caption already contains it
+  function buildCleanCaption(counter){
+    let c = (caption || "").trim();
+    if(!c) return "";
+
+    const t = (title || "").trim();
+    if(!t) return c;
+
+    // remove leading title/counter patterns if user pasted them into data-caption
+    const escapedT = t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const re1 = new RegExp("^\\s*" + escapedT + "\\s*[—-]\\s*" + counter.replace("/", "\\/") + "\\s*(?:[·•\\-–—]\\s*)?", "i");
+    const re2 = new RegExp("^\\s*" + escapedT + "\\s+" + counter.replace("/", "\\/") + "\\s*(?:[·•\\-–—]\\s*)?", "i");
+
+    c = c.replace(re1, "").replace(re2, "").trim();
+    return c;
+  }
+
+  function setCaptionText(){
+    const counter = `${index + 1}/${images.length}`;
+    const clean = buildCleanCaption(counter);
+
+    const text = (title || "").trim()
+      ? `${title} — ${counter}${clean ? "\n\n" + clean : ""}`
+      : counter;
+
     lbCaptionDesktop.textContent = text;
     lbSheetBody.textContent = text;
   }
@@ -523,11 +577,10 @@ main.page{
 
     tmp.src = src;
 
-    const cap = title
-      ? `${title} — ${counter}${caption ? " · " + caption : ""}`
-      : counter;
+    setCaptionText();
 
-    setCaptionText(cap);
+    // 每张图默认收起 caption sheet
+    closeSheet();
 
     lb.scrollTop = 0;
   }
@@ -547,12 +600,15 @@ main.page{
     document.body.style.top = `-${scrollY}px`;
 
     lb.scrollTop = 0;
+    closeSheet();
     render();
   }
 
   function closeLightbox(){
     lb.classList.remove('open');
     lb.setAttribute('aria-hidden','true');
+
+    closeSheet();
 
     // ✅ restore page scroll position
     document.body.classList.remove('lb-open');
@@ -606,7 +662,45 @@ main.page{
     if(e.key === 'ArrowRight') next();
   });
 
-  /* Swipe support (mobile) */
+  /* ===== Mobile caption sheet: tap + swipe handle ===== */
+  if(lbGrab && lbSheet){
+    lbGrab.addEventListener('click', () => {
+      if(!isMobileNow()) return;
+      if(lb.classList.contains('cap-open')) closeSheet();
+      else openSheet();
+    });
+
+    let startY = 0;
+    let dy = 0;
+    let trackingSheet = false;
+
+    lbGrab.addEventListener('touchstart', (e) => {
+      if(!isMobileNow()) return;
+      if(!e.touches || e.touches.length !== 1) return;
+      startY = e.touches[0].clientY;
+      dy = 0;
+      trackingSheet = true;
+    }, { passive:true });
+
+    lbGrab.addEventListener('touchmove', (e) => {
+      if(!trackingSheet) return;
+      if(!isMobileNow()) return;
+      if(!e.touches || e.touches.length !== 1) return;
+      dy = e.touches[0].clientY - startY;
+      if(Math.abs(dy) > 6) e.preventDefault();
+    }, { passive:false });
+
+    lbGrab.addEventListener('touchend', () => {
+      if(!trackingSheet) return;
+      trackingSheet = false;
+      if(!isMobileNow()) return;
+
+      if(dy < -30) openSheet();
+      else if(dy > 30) closeSheet();
+    }, { passive:true });
+  }
+
+  /* Swipe support (mobile) for photos */
   let startX = 0, startY = 0;
   let tracking = false;
   let lockedDirection = null;
@@ -616,6 +710,10 @@ main.page{
   function onTouchStart(e){
     if(!lb.classList.contains('open')) return;
     if(!e.touches || e.touches.length !== 1) return;
+
+    // if gesture starts on sheet, don't treat as photo swipe
+    const path = e.composedPath ? e.composedPath() : [];
+    if(lbSheet && path.includes(lbSheet)) return;
 
     const t = e.touches[0];
     startX = t.clientX;
