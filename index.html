@@ -249,29 +249,38 @@
       .hero p{ font-size:15px; }
 
       .cliff-dock{
-        /* ✅ 只改这里：把分类块往上提（原来是 60px） */
-        margin-top: 35px;
+        margin-top: 35px;                 /* ✅ 只上移：数值越小越靠上 */
         grid-template-columns:1fr;
         row-gap:22px;
+        justify-items:center;             /* ✅ Grid 统一居中（关键） */
       }
 
-      .marker.left,.marker.right{ justify-self:center; }
+      /* ✅ 清除桌面端 left/right 的 start/end 残留（关键） */
+      .marker.left, .marker.right{
+        justify-self:center;
+      }
 
+      /* ✅ 不变大：不设置固定 width，只限制最大宽度 */
       .marker{
         flex-direction:column;
         align-items:center;
         text-align:center;
-        width:min(88vw, 520px);
+
+        width:fit-content;                /* ✅ 保持“内容决定宽度” */
+        max-width:min(88vw, 520px);       /* ✅ 超长时才收缩 */
         gap:6px;
         background:rgba(0,0,0,0.34);
       }
+
       .marker.right{ flex-direction:column; }
 
+      /* 手机端显示副标题（你原逻辑），但不撑宽 */
       .marker .side-text{
         opacity:1;
         max-width:100%;
         overflow:hidden;
         white-space:nowrap;
+        text-align:center;
       }
 
       .scroll-down span{ font-size:15px; }
