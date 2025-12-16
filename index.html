@@ -3,30 +3,40 @@
 <head>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ✅ iPhone Chrome 关键：加 viewport-fit=cover 才能正确使用 safe-area-inset-* -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
   <title>Yu Zeng Photography</title>
 
   <style>
     *{ box-sizing:border-box; }
     html,body{ height:100%; scroll-behavior:smooth; }
 
-    /* 用伪元素做“真正的背景”，移动端不会出现固定/断层问题 */
+    /* ✅ 用 JS 写入的真实可见高度（iPhone Chrome/Safari 都稳） */
+    :root{
+      --vh: 1vh;
+      --safe-b: env(safe-area-inset-bottom, 0px);
+      --safe-t: env(safe-area-inset-top, 0px);
+    }
+
     body{
       margin:0;
       font-family:'Poppins', Arial, sans-serif;
       min-height:100vh;
 
-      background: #000; /* 兜底色 */
+      background:#000;
       scroll-snap-type:y mandatory;
       overflow-y:scroll;
+      -webkit-overflow-scrolling:touch;
     }
 
-    /* 背景图层：跟着滚动（position: fixed 但覆盖整个页面，不会“只显示第一屏”） */
+    /* 背景图层：跟着滚动（position: fixed 但覆盖整个页面） */
     body::after{
       content:"";
       position:fixed;
       inset:0;
-      background: url('photo_x/background_x.jpg') center/cover no-repeat;
+      background:url('photo_x/background_x.jpg') center/cover no-repeat;
       z-index:-2;
       transform: translateZ(0);
     }
@@ -46,9 +56,15 @@
 
     .screen{ position:relative; z-index:1; }
 
+    /* ✅ iPhone Chrome 关键：不要只用 100vh；用“可见视口高度” */
+    .hero, .manifesto{
+      min-height: 100vh;                 /* fallback */
+      min-height: 100svh;                /* iOS 新单位（更稳） */
+      min-height: calc(var(--vh) * 100); /* JS 兜底：永远等于真实可见高度 */
+    }
+
     /* ===== 第一屏 ===== */
     .hero{
-      min-height:100vh;
       scroll-snap-align:start;
       scroll-snap-stop:always;
 
@@ -59,10 +75,13 @@
       padding: 36px 20px 0;
       text-align:center;
       position:relative;
+
+      /* ✅ 关键：给底部留“安全区 + 导航栏”空间，避免提示被挡住 */
+      padding-bottom: calc(var(--safe-b) + 110px);
     }
 
     .hero-top{
-      margin-top:18px;
+      margin-top: calc(var(--safe-t) + 18px);
       display:flex;
       flex-direction:column;
       align-items:center;
@@ -163,16 +182,16 @@
     .marker.right{ flex-direction:row-reverse; }
     .marker.right .side-text{ text-align:right; }
 
-    /* Scroll 提示：更靠底 + 箭头动 */
+    /* ✅ Scroll 提示：用 safe-area + 额外缓冲，iPhone Chrome 不会被底栏挡住 */
     .scroll-down{
       position:absolute;
       left:0; right:0;
-      bottom: calc(env(safe-area-inset-bottom, 0px) + 26px); /* ✅ safe-area */
+      bottom: calc(var(--safe-b) + 46px);
       text-align:center;
       color:#fff;
       cursor:pointer;
       user-select:none;
-      z-index: 10; /* ✅ 确保在最上层 */
+      z-index:10;
     }
 
     .scroll-down span{
@@ -201,7 +220,6 @@
 
     /* ===== 第二屏 ===== */
     .manifesto{
-      min-height:100vh;
       scroll-snap-align:start;
       scroll-snap-stop:always;
 
@@ -234,8 +252,7 @@
 
     /* ===== Mobile ===== */
     @media (max-width: 820px){
-      /* 不再动 background-attachment（因为背景在 body::after 里了） */
-      .hero{ padding:16px 14px 0; }
+      .hero{ padding:16px 14px 0; padding-bottom: calc(var(--safe-b) + 120px); }
       .hero h1{ font-size:24px; }
       .hero p{ font-size:15px; }
 
@@ -264,7 +281,7 @@
         white-space:nowrap;
       }
 
-      .scroll-down{ bottom: calc(env(safe-area-inset-bottom, 0px) + 20px); }
+      .scroll-down{ bottom: calc(var(--safe-b) + 36px); }
       .scroll-down span{ font-size:15px; }
       .scroll-down svg{ width:24px; height:24px; }
 
@@ -323,15 +340,16 @@
       <h2></h2>
       <p>
         I am a very shy person. I rarely express myself, but I deeply treasure my memories.
-I take photos to remember what I felt, who I met, and the smallest things that mattered. <br>
+        I take photos to remember what I felt, who I met, and the smallest things that mattered. <br><br>
 
-Photos can never fade (thanks to god-damn technology), but my stupid brain still does.
-I was inspired by a conversation with someone about photography (and other crazy things), and tah-dah! Here is a place to keep those memories.<br>
+        Photos can never fade (thanks to god-damn technology), but my stupid brain still does.
+        I was inspired by a conversation with someone about photography (and other crazy things), and tah-dah!
+        Here is a place to keep those memories.<br><br>
 
-All of this is truly honest to me and to the people I have met.
-If you like to dig deeper, I hope you will enjoy the journey with me/ my memories.<br>
+        All of this is truly honest to me and to the people I have met.
+        If you like to dig deeper, I hope you will enjoy the journey with me/ my memories.<br><br>
 
-(The “Sport” section is another one of my crazy dreams.)
+        (The “Sport” section is another one of my crazy dreams.)
       </p>
     </div>
   </section>
@@ -339,6 +357,19 @@ If you like to dig deeper, I hope you will enjoy the journey with me/ my memorie
   <script>
     function scrollNext(){
       document.getElementById('manifesto').scrollIntoView({ behavior:'smooth' });
+    }
+
+    // ✅ iPhone Chrome / Safari 终极修复：用 visualViewport 得到真实可见高度，写入 --vh
+    function setVH(){
+      const vv = window.visualViewport;
+      const h = (vv && vv.height) ? vv.height : window.innerHeight;
+      document.documentElement.style.setProperty('--vh', (h * 0.01) + 'px');
+    }
+    setVH();
+    window.addEventListener('resize', setVH);
+    if (window.visualViewport){
+      window.visualViewport.addEventListener('resize', setVH);
+      window.visualViewport.addEventListener('scroll', setVH);
     }
 
     // 一滚切屏
@@ -370,23 +401,10 @@ If you like to dig deeper, I hope you will enjoy the journey with me/ my memorie
     }
     window.addEventListener('scroll', updateDim, { passive:true });
 
-    // ✅ 修复：Chrome 手机端 + scroll-snap 首屏不显示 scroll hint
+    // load 初始化
     window.addEventListener('load', () => {
+      setVH();
       updateDim();
-
-      const ua = navigator.userAgent || "";
-      const isMobile = /Android|iPhone|iPad|iPod/i.test(ua);
-      const isChrome = /Chrome/i.test(ua) && !/CriOS/i.test(ua) && !/EdgiOS/i.test(ua);
-      // iOS Chrome 会是 CriOS，这里也可以一并处理；但你说的是 Chrome 手机端，就一起兜住
-      const isChromeLike = /Chrome|CriOS/i.test(ua);
-
-      if (isMobile && isChromeLike && window.scrollY === 0) {
-        // “唤醒”滚动系统（肉眼不可见）
-        requestAnimationFrame(() => {
-          window.scrollTo(0, 1);
-          requestAnimationFrame(() => window.scrollTo(0, 0));
-        });
-      }
     });
   </script>
 </body>
