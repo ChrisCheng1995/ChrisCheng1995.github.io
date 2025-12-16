@@ -145,43 +145,44 @@ main.page{
   flex-direction: column;
   z-index: 3000;
 
-  /* ✅ allow vertical scroll inside lightbox for portrait photos */
+  /* allow vertical scroll for long captions */
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 
-  /* allow vertical pan; we intercept horizontal swipe */
+  /* allow vertical pan; we'll intercept horizontal swipe in JS */
   touch-action: pan-y;
-
-  /* keep padding consistent */
-  padding: 18px 18px 22px;
 }
 .lightbox.open{ display:flex; }
 
-/* A stage to center content but still allow scroll when needed */
+/* stage: reserve safe area + space for close btn */
 .lightbox .lb-stage{
-  width: 100%;
-  min-height: calc(100vh - 40px);
+  /* use dvh on mobile Safari to avoid 100vh bugs */
+  min-height: 100dvh;
   display:flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding-top: 16px;
-  padding-bottom: 18px;
+
+  padding-left: 16px;
+  padding-right: 16px;
+
+  /* top padding ensures image never sits under the close button */
+  padding-top: calc(env(safe-area-inset-top, 0px) + 64px);
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
 }
 
-/* Image sizing: leave space for top close button and caption */
+/* Image sizing: contain fully, no extra margin-top */
 .lightbox img{
   width: auto;
   max-width: 92vw;
-  max-height: calc(100vh - 170px);
-  height: auto;
-  object-fit: contain;
+
+  /* key fix: dvh + enough room for caption + controls */
+  max-height: calc(100dvh - 210px);
 
   border-radius: 12px;
   box-shadow: 0 18px 40px rgba(0,0,0,0.35);
-
-  /* ✅ ensure not under close button */
-  margin-top: 56px;
+  display:block;
+  object-fit: contain;
 }
 
 /* Smooth swap */
@@ -221,25 +222,28 @@ main.page{
   user-select: none;
 }
 
-/* ✅ Close always reachable (safe-area aware) */
+/* Close button always reachable (fixed) */
 .lb-close{
   position: fixed;
-  top: calc(env(safe-area-inset-top, 0px) + 14px);
-  right: calc(env(safe-area-inset-right, 0px) + 14px);
+  top: calc(env(safe-area-inset-top, 0px) + 12px);
+  right: calc(env(safe-area-inset-right, 0px) + 12px);
   z-index: 4000;
-
   font-size: 30px;
   line-height: 38px;
-
   background: rgba(0,0,0,0.55);
   border-color: rgba(255,255,255,0.22);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
 }
 
-/* keep prev/next as-is */
+/* prev/next */
 .lb-prev{ left: 18px; top: 50%; transform: translateY(-50%); }
 .lb-next{ right: 18px; top: 50%; transform: translateY(-50%); }
+
+.lb-prev[disabled], .lb-next[disabled]{
+  opacity: .45;
+  cursor: not-allowed;
+}
 
 /* ===== Mobile nav behavior ===== */
 @media (max-width:700px){
@@ -255,20 +259,15 @@ main.page{
     flex-wrap: nowrap;
   }
   .nav-links::-webkit-scrollbar{ display:none; }
-
   .nav-links a{ font-size:13px; }
 
   .hero{ margin-top:64px; padding:90px 0 60px; }
   .hero h1{ font-size:40px; }
   .hero p{ font-size:16px; }
 
-  .lightbox{
-    padding: 14px 14px 18px;
-  }
-
+  /* a bit more room for caption on small screens */
   .lightbox img{
-    max-height: calc(100vh - 180px);
-    margin-top: 60px;
+    max-height: calc(100dvh - 230px);
   }
 }
 </style>
@@ -353,17 +352,8 @@ stayed at Finn&apos;s place watching dramas.'
   let title = '';
   let caption = '';
 
-  // ✅ Remove the annoying "lock": keep UX responsive
-  // Use a tiny throttle instead (prevents spam-trigger crashes on mobile)
-  let lastNavAt = 0;
-  const NAV_THROTTLE_MS = 150;
-
-  function canNavigate(){
-    const now = Date.now();
-    if(now - lastNavAt < NAV_THROTTLE_MS) return false;
-    lastNavAt = now;
-    return true;
-  }
+  // Prevent mobile spam-click lockups (your “lock”)
+  let isSwitching = false;
 
   function preload(src){
     if(!src) return;
@@ -375,6 +365,11 @@ stayed at Finn&apos;s place watching dramas.'
   function safeIndex(i){
     if(!images.length) return 0;
     return (i + images.length) % images.length;
+  }
+
+  function setNavDisabled(disabled){
+    btnPrev.disabled = disabled;
+    btnNext.disabled = disabled;
   }
 
   function render(){
@@ -392,25 +387,34 @@ stayed at Finn&apos;s place watching dramas.'
     preload(images[safeIndex(index + 1)]);
     preload(images[safeIndex(index - 1)]);
 
-    // Load into temp image then swap (prevents blank stutter)
+    isSwitching = true;
+    setNavDisabled(true);
+
     const tmp = new Image();
     tmp.decoding = "async";
+
     tmp.onload = () => {
       lbImg.src = src;
       requestAnimationFrame(() => { lbImg.style.opacity = 1; });
+      isSwitching = false;
+      setNavDisabled(false);
     };
+
     tmp.onerror = () => {
-      // fallback: still swap, so user sees broken image rather than "stuck"
+      // even if error, don't “freeze”
       lbImg.src = src;
       requestAnimationFrame(() => { lbImg.style.opacity = 1; });
+      isSwitching = false;
+      setNavDisabled(false);
     };
+
     tmp.src = src;
 
     lbCaption.textContent = title
       ? `${title} — ${counter}${caption ? " · " + caption : ""}`
       : counter;
 
-    // ✅ Keep close button reachable and avoid weird scroll positions
+    // Keep close button reachable
     lb.scrollTop = 0;
   }
 
@@ -434,18 +438,20 @@ stayed at Finn&apos;s place watching dramas.'
     lb.setAttribute('aria-hidden','true');
     document.body.style.overflow = '';
     document.body.classList.remove('lb-open');
+    isSwitching = false;
+    setNavDisabled(false);
   }
 
   function prev(){
     if(images.length <= 1) return;
-    if(!canNavigate()) return;
+    if(isSwitching) return;
     index = safeIndex(index - 1);
     render();
   }
 
   function next(){
     if(images.length <= 1) return;
-    if(!canNavigate()) return;
+    if(isSwitching) return;
     index = safeIndex(index + 1);
     render();
   }
@@ -467,8 +473,12 @@ stayed at Finn&apos;s place watching dramas.'
   btnPrev.addEventListener('click', prev);
   btnNext.addEventListener('click', next);
 
-  // Click outside image to close
-  lb.addEventListener('click', (e) => { if(e.target === lb) closeLightbox(); });
+  // Click outside stage to close (don’t close when tapping on content)
+  lb.addEventListener('click', (e) => {
+    const stage = lb.querySelector('.lb-stage');
+    if(e.target === lb) closeLightbox();
+    if(stage && e.target === stage) closeLightbox();
+  });
 
   // Keyboard navigation
   window.addEventListener('keydown', (e) => {
@@ -552,28 +562,6 @@ stayed at Finn&apos;s place watching dramas.'
     if(now - lastTap < 300) closeLightbox();
     lastTap = now;
   }, { passive: true });
-
-  /* =========================
-     Page-level warm preload:
-     Preload first 3 images of each album after page load
-     ========================= */
-  window.addEventListener('load', () => {
-    const run = () => {
-      document.querySelectorAll('.album').forEach(album => {
-        const imgs = (album.dataset.images || '')
-          .split(',')
-          .map(s => s.trim())
-          .filter(Boolean);
-        imgs.slice(0, 3).forEach(src => preload(src));
-      });
-    };
-
-    if ('requestIdleCallback' in window) {
-      requestIdleCallback(run, { timeout: 2000 });
-    } else {
-      setTimeout(run, 1200);
-    }
-  });
 </script>
 
 </body>
