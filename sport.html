@@ -561,6 +561,26 @@ main.page{
     if(capSheet) capSheet.setAttribute('aria-hidden','false');
   }
 
+  // ✅ remove duplicated "Title — 1/7" if user already typed it in data-caption
+  function buildCleanCaption(counter){
+    let c = (caption || "").trim();
+    if(!c) return "";
+
+    const t = (title || "").trim();
+    if(!t) return c;
+
+    const escT = t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const escCounter = counter.replace("/", "\\/");
+
+    // remove leading patterns like:
+    // "Title — 1/7 · xxx" OR "Title 1/7 xxx"
+    const re1 = new RegExp("^\\s*" + escT + "\\s*[—-]\\s*" + escCounter + "\\s*(?:[·•\\-–—]\\s*)?", "i");
+    const re2 = new RegExp("^\\s*" + escT + "\\s+" + escCounter + "\\s*(?:[·•\\-–—]\\s*)?", "i");
+
+    c = c.replace(re1, "").replace(re2, "").trim();
+    return c;
+  }
+
   function render(){
     if(!images.length) return;
 
@@ -602,18 +622,17 @@ main.page{
 
     tmp.src = src;
 
+    const cleanCaption = buildCleanCaption(counter);
+
     // desktop caption
     lbCaption.textContent = title
-      ? `${title} — ${counter}${caption ? " · " + caption : ""}`
+      ? `${title} — ${counter}${cleanCaption ? " · " + cleanCaption : ""}`
       : counter;
 
-    // mobile sheet caption content
+    // mobile sheet caption content (top: Title — 1/7, body: ONLY caption)
     if(capBody){
-      const full = title
-        ? `${title} — ${counter}${caption ? "\n\n" + caption : ""}`
-        : counter;
-      capBody.textContent = full;
       capTitle.textContent = title ? `${title} — ${counter}` : counter;
+      capBody.textContent = cleanCaption || "";
       capBody.scrollTop = 0;
       closeCaptionSheet();
     }
