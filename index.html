@@ -167,11 +167,12 @@
     .scroll-down{
       position:absolute;
       left:0; right:0;
-      bottom:26px;
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 26px); /* ✅ safe-area */
       text-align:center;
       color:#fff;
       cursor:pointer;
       user-select:none;
+      z-index: 10; /* ✅ 确保在最上层 */
     }
 
     .scroll-down span{
@@ -263,7 +264,7 @@
         white-space:nowrap;
       }
 
-      .scroll-down{ bottom:20px; }
+      .scroll-down{ bottom: calc(env(safe-area-inset-bottom, 0px) + 20px); }
       .scroll-down span{ font-size:15px; }
       .scroll-down svg{ width:24px; height:24px; }
 
@@ -331,7 +332,6 @@ All of this is truly honest to me and to the people I have met.
 If you like to dig deeper, I hope you will enjoy the journey with me/ my memories.<br>
 
 (The “Sport” section is another one of my crazy dreams.)
-
       </p>
     </div>
   </section>
