@@ -379,66 +379,75 @@ main.page{
 <main class="page">
   <div class="masonry">
 
-    <div class="album"
-      data-title="Guinness"
-      data-caption="Sexy drink."
+    <div class="album" data-title="Guinness" data-caption="Sexy drink."
       data-images="photo_x/DSC00755_x.jpg">
       <img src="photo_x/DSC00755_x.jpg" loading="lazy" decoding="async" alt="Guinness">
       <p>Guinness</p>
     </div>
 
-    <div class="album"
-      data-title="Towel"
-      data-caption="Towel, Datong"
+    <div class="album" data-title="Towel" data-caption="Towel, Datong"
       data-images="photo_x/DSC03136_x.jpg">
       <img src="photo_x/DSC03136_x.jpg" loading="lazy" decoding="async" alt="Towel">
       <p>Towel</p>
     </div>
 
-    <div class="album"
-      data-title="Hedgehog"
-      data-caption="Blueberry goat cheese"
+    <div class="album" data-title="Hedgehog" data-caption="Blueberry goat cheese"
       data-images="photo_x/DSC03868_x.jpg">
       <img src="photo_x/DSC03868_x.jpg" loading="lazy" decoding="async" alt="Hedgehog">
       <p>Hedgehog</p>
     </div>
 
-    <div class="album"
-      data-title="Pray"
-      data-caption="Wutai mountain"
-      data-images="photo_x/DSC03285_x.jpg">
-      <img src="photo_x/DSC03285_x.jpg" loading="lazy" decoding="async" alt="Pray">
-      <p>Pray</p>
-
-   </div>
-    <div class="album"
-      data-title="Marrige"
-      data-caption="Lucas‘s marrige"
+    <div class="album" data-title="Marrige" data-caption="Lucas‘s marrige"
       data-images="photo_x/DSC04696_x.jpg">
-      <img src="photo_x/DSC04696_x.jpg" loading="lazy" decoding="async" alt="Pray">
+      <img src="photo_x/DSC04696_x.jpg" loading="lazy" decoding="async" alt="Lucas‘s marrige">
       <p>Lucas‘s marrige</p>
     </div>
-  </div>
-      
-    </div>
-    <div class="album"
-      data-title="Nice chips"
-      data-caption="I hate monkey."
+
+    <div class="album" data-title="Nice chips" data-caption="I hate monkey."
       data-images="photo_x/DSC02970_x.jpg">
-      <img src="photo_x/DSC02970_x.jpg" loading="lazy" decoding="async" alt="Pray">
+      <img src="photo_x/DSC02970_x.jpg" loading="lazy" decoding="async" alt="Nice chips">
       <p>Nice chips</p>
     </div>
-  </div>
 
- </div>
-    <div class="album"
-      data-title="Africa"
-      data-caption="Free"
+    <div class="album" data-title="Africa" data-caption="Free"
       data-images="photo_x/IMG_3120.JPEG">
-      <img src="photo_x/IMG_3120.JPEG" loading="lazy" decoding="async" alt="Pray">
+      <img src="photo_x/IMG_3120.JPEG" loading="lazy" decoding="async" alt="Africa">
       <p>Africa</p>
     </div>
+
+    <div class="album" data-title="Kindle" data-caption="Church"
+      data-images="photo_x/IMG_5544.JPEG">
+      <img src="photo_x/IMG_5544.JPEG" loading="lazy" decoding="async" alt="Kindle">
+      <p>Kindle</p>
+    </div>
+
+    <div class="album" data-title="Ride" data-caption="Ride"
+      data-images="photo_x/df849a0d0d7e71da87dda31c1513a66.jpg">
+      <img src="photo_x/df849a0d0d7e71da87dda31c1513a66.jpg" loading="lazy" decoding="async" alt="Ride">
+      <p>Ride</p>
+    </div>
+
   </div>
+
+  <!-- Lightbox stays OUTSIDE masonry but INSIDE main -->
+  <div id="lightbox" class="lightbox" aria-hidden="true">
+    <button class="lb-close" aria-label="Close">&times;</button>
+    <button class="lb-prev" aria-label="Previous">&#8249;</button>
+    <button class="lb-next" aria-label="Next">&#8250;</button>
+
+    <div class="lb-stage">
+      <img id="lb-img" src="" alt="" decoding="async" draggable="false">
+      <div class="lb-caption-desktop" id="lb-caption"></div>
+    </div>
+
+    <div class="lb-sheet" id="lb-sheet" aria-hidden="true">
+      <div class="lb-grab" id="lb-grab">
+        <div class="lb-sheet-title" id="lb-sheet-title">Swipe up for caption</div>
+      </div>
+      <div class="lb-sheet-body" id="lb-sheet-body"></div>
+    </div>
+  </div>
+</main>
 
    </div>
     <div class="album"
